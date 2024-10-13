@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+
+      #container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+      }
+
+      #container > div {
+        width: 200px;
+        height: 200px;
+        background-color: #f2f2f2;
+        margin: 10px;
+        padding: 20px;
+      }
+
+      #generarBtn {
+        margin-top: 20px;
+      }
+
+      #card {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+      }
+
+      h2 {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      p {
+        text-align: center;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #555;
+      }
+
+      #card:hover {
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <button id="generarBtn">Generar Alumno</button>
+
+    <script>
+      // Creamos el constructor de la clase Alumno
+      class Alumno {
+        constructor(id, nombre, edad) {
+          this.id = id;
+          this.nombre = nombre;
+          this.edad = edad;
+        }
+      }
+
+      // Creamos lista de alumnos
+      let alumnos = [];
+      for (let i = 0; i < 22; i++) {
+        alumnos.push(
+          new Alumno(
+            i + 1,
+            `Alumno ${i + 1}`,
+            Math.floor(Math.random() * 10) + 18
+          )
+        );
+      }
+
+      let alumnosGenerados = []; // Para rastrear los alumnos ya generados
+      let container = document.getElementById("container");
+      let generarBtn = document.getElementById("generarBtn");
+
+      // Función para generar un alumno
+      function generarAlumno() {
+        if (alumnosGenerados.length >= 22) {
+          alert("No se pueden agregar más alumnos. Ya se han generado todos.");
+          return;
+        }
+
+        let alumnoRandom;
+        do {
+          alumnoRandom = alumnos[Math.floor(Math.random() * alumnos.length)];
+        } while (alumnosGenerados.includes(alumnoRandom));
+        alumnosGenerados.push(alumnoRandom);
+
+        // Crear la tarjeta del alumno
+        let card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+                <h5 class="card-title">${alumnoRandom.nombre}</h5>
+                <p class="card-text">ID: ${alumnoRandom.id}</p>
+                <p class="card-text">Edad: ${alumnoRandom.edad} años</p>
+                <button class="btn btn-primary eliminarBtn">Eliminar</button>
+                <p>container: ${alumnosGenerados.length}</p>
+            `;
+
+        // Botón para eliminar la tarjeta del alumno
+        card.querySelector(".eliminarBtn").addEventListener("click", () => {
+          container.removeChild(card);
+          alumnosGenerados = alumnosGenerados.filter(
+            (al) => al.id !== alumnoRandom.id
+          );
+        });
+
+        // Añadir la tarjeta al contenedor
+        container.appendChild(card);
+      }
+
+      // Añadimos el evento de clic al botón generar
+      generarBtn.addEventListener("click", generarAlumno);
+    </script>
+  </body>
+</html>
